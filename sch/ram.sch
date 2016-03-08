@@ -2779,7 +2779,7 @@ Source: http://www2.produktinfo.conrad.com/datenblaetter/700000-724999/705152-da
 <junction x="220.98" y="48.26"/>
 </segment>
 </net>
-<net name="!REGSELECT!" class="0">
+<net name="!REG-ENABLE!" class="0">
 <segment>
 <pinref part="IC15" gate="A" pin="I1"/>
 <wire x1="220.98" y1="15.24" x2="182.88" y2="15.24" width="0.1524" layer="91"/>
@@ -3175,7 +3175,7 @@ Source: http://www2.produktinfo.conrad.com/datenblaetter/700000-724999/705152-da
 <junction x="520.7" y="-45.72"/>
 </segment>
 </net>
-<net name="!RAMSELECT!" class="0">
+<net name="!RAM-ENABLE!" class="0">
 <segment>
 <pinref part="IC1" gate="A" pin="OC"/>
 <wire x1="492.76" y1="-55.88" x2="487.68" y2="-55.88" width="0.1524" layer="91"/>
