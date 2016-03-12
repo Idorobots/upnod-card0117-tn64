@@ -13,7 +13,7 @@ Complimentary commentary can be found on [my blog](http://blog.idorobots.org/tag
 ## Upgrade
 The card appears to have been modded at one point. It's factory marked as TN-104 (despite the actual PCB being marked TN64), but that has been crossed-out and marked TN-135 with a faint marker. The aboundance of blue mod-wires seems to support this.
 
-## *Ok guys, I think the ROM works, let's program this thing.*
+## *Ok guys, I think the EEPROM works, let's program this thing.*
 
 [Top ROM chip's contents](./rom/top.bin) are amusing:
 ```
@@ -21,6 +21,10 @@ The card appears to have been modded at one point. It's factory marked as TN-104
 00000eb0: 4e20 424f 5820 4a55 4d50 5320 4f56 4552  N BOX JUMPS OVER
 00000ec0: 2054 4845 204c 415a 5920 4652 4f47 0a0d   THE LAZY FROG..
 ```
+
+## *Just use the leftovers, she'll be a'ight.*
+
+Some logic gates on the board are used in a sub-optimal way (either combined into another logic gate, or with signals travelling to the other side of the PCB and back). Most likely due to space/money constraints.
 
 # Why?
 
