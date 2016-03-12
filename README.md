@@ -4,6 +4,7 @@ This repository contains all the knowledge I could gather about a vintage, 80-ie
 * [Pictures](./img/)
 * [ROM dumps](./rom/)
 * [Reverse-engineered schematics](./sch/)
+* [VHDL models & simulation results](./vhdl)
 * [Datasheets of old chips](./datasheets/)
 
 Complimentary commentary can be found on [my blog](http://blog.idorobots.org/tags/upnod.html).
