@@ -4,9 +4,12 @@ CFLAGS = --ieee=synopsys --warn-no-vital-generic
 SRC = src/*.vhd
 SIM = sim
 
-SFLAGS = --stop-time=50us --wave=$(SIM)/$(TARGET).ghw
+OUTPUT = $(SIM)/$(TARGET).ghw
+SFLAGS = --stop-time=50us --wave=$(OUTPUT)
 
-all: compile run
+VIEWER = gtkwave
+
+all: compile run view
 
 compile:
 ifeq ($(TARGET),)
@@ -19,6 +22,10 @@ endif
 
 run:
 	$(CC) -r $(TARGET) $(SFLAGS)
+
+.PHONY: view
+view:
+	$(VIEWER) $(OUTPUT)
 
 .PHONY: clean
 clean:
