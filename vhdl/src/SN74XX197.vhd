@@ -50,6 +50,8 @@ begin
 
   q(0) <= div2 after DELAY;
 
+  -- According to the datasheet, each successive output has increasing delay.
+  -- This loop roughly emulates the resulting delay.
   OUTPUT:
   for i in 1 to 3 generate
     q(i) <= std_logic(div8(i-1)) after i*DELAY;
