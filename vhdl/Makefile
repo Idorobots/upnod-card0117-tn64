@@ -20,11 +20,11 @@ endif
 	$(CC) -i $(CFLAGS) --workdir=$(SIM) --work=work $(SRC)
 	$(CC) -m $(CFLAGS) --workdir=$(SIM) --work=work $(TARGET)
 
-run:
+run: compile
 	$(CC) -r $(TARGET) $(SFLAGS)
 
 .PHONY: view
-view:
+view: run
 	$(VIEWER) $(OUTPUT)
 
 .PHONY: clean
