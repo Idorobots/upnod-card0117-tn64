@@ -20,6 +20,8 @@ architecture rtl of SN74XX139 is
   constant LUT : lut_array := ("0111", "1011", "1101", "1110");
 begin
 
-  output <= LUT(to_integer(unsigned(addr))) after DELAY when e = '0' else "1111" after DELAY;
+  output <= LUT(to_integer(unsigned(addr))) after DELAY
+            when e = '0'
+            else "1111" after DELAY;
 
 end rtl;
