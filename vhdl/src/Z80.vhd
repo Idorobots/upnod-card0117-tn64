@@ -138,24 +138,41 @@ architecture rtl of Z80 is
   begin
     readline(f, l);
   end procedure;
+
+  procedure looped_read_csv_line(file f : text; filename : in string; v: out vcd; eof : inout boolean) is
+    variable skip : boolean := false;
+  begin
+    -- Reopen file on EOF.
+    if eof then
+      file_close(f);
+      file_open(f, filename, READ_MODE);
+      eof := false;
+      skip := true;
+    end if;
+
+    -- Skip header.
+    if skip then
+      skip_line(f);
+    end if;
+
+    -- Read vcd.
+    read_csv_line(f, v, eof);
+
+    -- Reopen & re-read vcd when EOF.
+    if eof then
+      looped_read_csv_line(f, filename, v, eof);
+    end if;
+  end procedure;
+
 begin
 
   process(clk)
-    file f : text is in CSV_FILE;
+    file f : text;
     variable v : vcd := init;
-    variable skip : boolean := true;
-    variable eof : boolean := false;
+    variable eof : boolean := true;
   begin
-    -- Skip CSV header.
-    if skip then
-      skip_line(f);
-      skip := false;
-    end if;
-
     if rising_edge(clk) or falling_edge(clk) then
-      if not eof then
-        read_csv_line(f, v, eof);
-      end if;
+      looped_read_csv_line(f, CSV_FILE, v, eof);
 
       -- Assign all the signals.
       address <= v.address;
