@@ -5,7 +5,8 @@ use std.textio.all;
 
 entity Z80 is
   generic (
-    CSV_FILE : string
+    CSV_FILE : string;
+    DELAY : time
     );
 
   port (
@@ -175,16 +176,17 @@ begin
       looped_read_csv_line(f, CSV_FILE, v, eof);
 
       -- Assign all the signals.
-      address <= v.address;
-      data <= v.data;
-      busack <= v.busack;
-      halt <= v.halt;
-      refsh <= v.refsh;
-      m1 <= v.m1;
-      iorq <= v.iorq;
-      mreq <= v.mreq;
-      wr <= v.wr;
-      rd <= v.rd;
+      address <= v.address after DELAY;
+      data <= v.data after DELAY;
+      busack <= v.busack after DELAY;
+      halt <= v.halt after DELAY;
+      refsh <= v.refsh after DELAY;
+      m1 <= v.m1 after DELAY;
+      iorq <= v.iorq after DELAY;
+      mreq <= v.mreq after DELAY;
+      wr <= v.wr after DELAY;
+      rd <= v.rd after DELAY;
+
     end if;
   end process;
 

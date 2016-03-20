@@ -8,7 +8,8 @@ end entity;
 architecture TB of Z80mock is
   component Z80
     generic (
-      CSV_FILE : string
+      CSV_FILE : string;
+      DELAY : time
       );
     port (
       clk : in std_logic;
@@ -32,7 +33,8 @@ begin
 
   cpu : Z80
     generic map (
-      CSV_FILE => "sim/Z80mock.csv"
+      CSV_FILE => "sim/Z80mock.csv",
+      DELAY => 20 ns
       )
     port map (
       clk => clk
