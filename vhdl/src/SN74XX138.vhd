@@ -19,14 +19,14 @@ end SN74XX138;
 
 architecture rtl of SN74XX138 is
   type lut_array is array (0 to 7) of std_logic_vector(7 downto 0);
-  constant LUT : lut_array := ("01111111",
-                               "10111111",
-                               "11011111",
-                               "11101111",
-                               "11110111",
-                               "11111011",
+  constant LUT : lut_array := ("11111110",
                                "11111101",
-                               "11111110");
+                               "11111011",
+                               "11110111",
+                               "11101111",
+                               "11011111",
+                               "10111111",
+                               "01111111");
 begin
 
   output <= LUT(to_integer(unsigned(addr))) after DELAY
