@@ -262,12 +262,13 @@ begin
 
   cpu : Z80
     generic map (
-      --CSV_FILE => "sim/NOP.csv",
+      CSV_FILE => "sim/NOP.csv",
       --CSV_FILE => "sim/DJNZ.csv",
       --CSV_FILE => "sim/RDWR.csv",
       --CSV_FILE => "sim/IO.csv",
       --CSV_FILE => "sim/BUSACK.csv",
-      CSV_FILE => "sim/INT.csv",
+      --CSV_FILE => "sim/INT.csv",
+      --CSV_FILE => "sim/NMI.csv",
       DELAY => 20 ns
       )
     port map (
