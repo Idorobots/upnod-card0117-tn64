@@ -266,7 +266,8 @@ begin
       --CSV_FILE => "sim/DJNZ.csv",
       --CSV_FILE => "sim/RDWR.csv",
       --CSV_FILE => "sim/IO.csv",
-      CSV_FILE => "sim/BUSACK.csv",
+      --CSV_FILE => "sim/BUSACK.csv",
+      CSV_FILE => "sim/INT.csv",
       DELAY => 20 ns
       )
     port map (
