@@ -264,7 +264,8 @@ begin
     generic map (
       --CSV_FILE => "sim/NOP.csv",
       --CSV_FILE => "sim/DJNZ.csv",
-      CSV_FILE => "sim/RDWR.csv",
+      --CSV_FILE => "sim/RDWR.csv",
+      CSV_FILE => "sim/IO.csv",
       DELAY => 20 ns
       )
     port map (
