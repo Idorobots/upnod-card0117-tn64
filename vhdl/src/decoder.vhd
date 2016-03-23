@@ -3,9 +3,25 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity decoder is
+  port (
+    clk : in std_logic;
+    address : in std_logic_vector(15 downto 0);
+    data : in std_logic_vector(7 downto 0);
+    refsh : in std_logic;
+    m1 : in std_logic;
+    mreq : in std_logic;
+    iorq : in std_logic;
+    wr : in std_logic;
+    rd : in std_logic;
+    ram_en : out std_logic;
+    bot_rom_en : out std_logic;
+    top_rom_en : out std_logic;
+    reg_en : out std_logic;
+    ctc_en : out std_logic
+);
 end entity;
 
-architecture TB of decoder is
+architecture rtl of decoder is
 
   component SN74XX00
     generic (
@@ -112,25 +128,6 @@ architecture TB of decoder is
       );
   end component;
 
-  -- Inputs
-  signal clk : std_logic;
-  signal address : std_logic_vector(15 downto 0);
-  signal data : std_logic_vector(7 downto 0);
-  signal refsh : std_logic;
-  signal m1 : std_logic;
-  signal mreq : std_logic;
-  signal iorq : std_logic;
-  signal wr : std_logic;
-  signal rd : std_logic;
-
-  -- Outputs
-  signal ram_en : std_logic;
-  signal bot_rom_en : std_logic;
-  signal top_rom_en : std_logic;
-  signal reg_en : std_logic;
-  signal ctc_en : std_logic;
-
-  -- Boilerplate
   signal or_out : std_logic_vector(3 downto 0);
   signal nand_out : std_logic_vector(1 downto 0);
   signal and_out : std_logic_vector(1 downto 0);
@@ -259,37 +256,5 @@ begin
       addr => address(6 downto 4),
       output => decio
       );
-
-  cpu : Z80
-    generic map (
-      CSV_FILE => "sim/NOP.csv",
-      --CSV_FILE => "sim/DJNZ.csv",
-      --CSV_FILE => "sim/RDWR.csv",
-      --CSV_FILE => "sim/IO.csv",
-      --CSV_FILE => "sim/BUSACK.csv",
-      --CSV_FILE => "sim/INT.csv",
-      --CSV_FILE => "sim/NMI.csv",
-      DELAY => 20 ns
-      )
-    port map (
-      clk => clk,
-      address => address,
-      data => data,
-      refsh => refsh,
-      m1 => m1,
-      mreq => mreq,
-      iorq => iorq,
-      wr => wr,
-      rd => rd
-      );
-
-  -- 4 MHz main CLK.
-  process
-  begin
-    clk <= '0';
-    wait for 125 ns;
-    clk <= '1';
-    wait for 125 ns;
-  end process;
 
 end;
