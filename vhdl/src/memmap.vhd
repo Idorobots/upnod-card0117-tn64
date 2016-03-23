@@ -33,6 +33,8 @@ architecture TB of memmap is
     port (
       clk : in std_logic;
       reset : in std_logic;
+      w8 : in std_logic;
+
       address : out std_logic_vector(15 downto 0);
       data : out std_logic_vector(7 downto 0);
 
@@ -96,6 +98,7 @@ begin
     port map (
       clk => clk,
       reset => '1',
+      w8 => '1',
       address => address,
       data => data,
       refsh => refsh,

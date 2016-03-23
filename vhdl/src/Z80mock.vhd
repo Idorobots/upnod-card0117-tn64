@@ -14,6 +14,8 @@ architecture TB of Z80mock is
     port (
       clk : in std_logic;
       reset : in std_logic;
+      w8 : in std_logic;
+
       address : out std_logic_vector(15 downto 0);
       data : out std_logic_vector(7 downto 0);
 
@@ -30,6 +32,7 @@ architecture TB of Z80mock is
 
   signal clk : std_logic;
   signal reset : std_logic;
+  signal w8 : std_logic;
 
 begin
 
@@ -40,7 +43,8 @@ begin
       )
     port map (
       clk => clk,
-      reset => reset
+      reset => reset,
+      w8 => w8
       );
 
   -- 4 MHz CLK
@@ -61,4 +65,12 @@ begin
     wait for 10 us;
   end process;
 
+  -- WAIT pulse
+  process
+  begin
+    w8 <= '1';
+    wait for 5 us;
+    w8 <= '0';
+    wait for 250 ns;
+  end process;
 end;

@@ -12,6 +12,7 @@ entity Z80 is
   port (
     clk : in std_logic;
     reset : in std_logic;
+    w8 : in std_logic;
 
     address : out std_logic_vector(15 downto 0);
     data : out std_logic_vector(7 downto 0);
@@ -169,19 +170,21 @@ architecture rtl of Z80 is
 
 begin
 
-  process(clk, reset)
+  process(clk, reset, w8)
     file f : text;
     variable v : vcd := init;
     variable eof : boolean := true;
-    variable just_reset : boolean := false;
+    variable sync : boolean := false;
   begin
     if reset = '0' then
       eof := true; -- Reopen the file on the next clock cycle.
       v := init;
-      just_reset := true;
-    elsif rising_edge(clk) or (falling_edge(clk) and not just_reset) then
+      sync := true;
+    elsif falling_edge(clk) and w8 = '0' then
+      sync := true;
+    elsif w8 = '1' and (rising_edge(clk) or (falling_edge(clk) and not sync)) then
       looped_read_csv_line(f, CSV_FILE, v, eof);
-      just_reset := false;
+      sync := false;
     end if;
 
     -- Assign all the signals.
