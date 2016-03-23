@@ -3,9 +3,19 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 entity reset is
+  generic (
+    PULSE_WIDTH : time;
+    ENABLE_DELAY : time
+    );
+  port (
+    refsh : in std_logic;
+    sw_pulse : in std_logic;
+    fcr_pulse : in std_logic;
+    reset : out std_logic
+    );
 end entity;
 
-architecture TB of reset is
+architecture rtl of reset is
   component SN74XX00
     generic (
       WIDTH : integer;
@@ -16,7 +26,7 @@ architecture TB of reset is
       b : in std_logic_vector (WIDTH-1 downto 0);
       output : out std_logic_vector (WIDTH-1 downto 0)
       );
-    end component;
+  end component;
 
   component SN74XX32
     generic (
@@ -69,18 +79,16 @@ architecture TB of reset is
       );
   end component;
 
-  signal refsh : std_logic := '1';
   signal toggle : std_logic;
-  signal reset_sw : std_logic;
   signal toggle_reset : std_logic;
   signal reset_pulse : std_logic;
-  signal reset : std_logic;
   signal enable : std_logic := '0';
-  signal sw_pulse : std_logic := '0';
   signal nand_out : std_logic;
-  signal fcr_pulse : std_logic;
+  signal reset_sw : std_logic;
   signal reset_fcr : std_logic;
 begin
+
+  enable <= '1' after ENABLE_DELAY;
 
   n : SN74XX04
     generic map (
@@ -119,7 +127,7 @@ begin
 
   m : SN74XX123
     generic map (
-      PULSE_WIDTH => 5 us,
+      PULSE_WIDTH => PULSE_WIDTH,
       DELAY => 8 ns
       )
     port map (
@@ -142,40 +150,5 @@ begin
       output(0) => nand_out,
       output(1) => reset
       );
-
-  -- REFSH pulse
-  process
-  begin
-    refsh <= '1' and reset;
-    wait for 500 ns;
-    refsh <= '0';
-    wait for 500 ns;
-  end process;
-
-  -- NORTH conn reset pulse.
-  process
-  begin
-    fcr_pulse <= '1';
-    wait for 20 us;
-    fcr_pulse <= '0';
-    wait for 5 us;
-    fcr_pulse <= '1';
-    wait for 50 us;
-  end process;
-
-  -- Reset switch toggling
-  process
-  begin
-    sw_pulse <= '0';
-    wait for 10 us;
-    sw_pulse <= '1';
-    wait for 23 us;
-    sw_pulse <= '0';
-    wait for 10 us;
-    sw_pulse <= '1';
-    wait for 50 us;
-    end process;
-
-  enable <= '1' after 10 us;
 
 end;
