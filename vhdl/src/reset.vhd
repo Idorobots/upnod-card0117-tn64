@@ -78,22 +78,20 @@ architecture TB of reset is
   signal enable : std_logic := '0';
   signal sw_pulse : std_logic := '0';
   signal nand_out : std_logic;
-  signal nconn_pulse : std_logic;
-  signal reset_nconn : std_logic;
+  signal fcr_pulse : std_logic;
+  signal reset_fcr : std_logic;
 begin
 
   n : SN74XX04
     generic map (
-      WIDTH => 3,
+      WIDTH => 2,
       DELAY => 8 ns
       )
     port map (
       input(0) => sw_pulse,
-      input(1) => nconn_pulse,
-      input(2) => nand_out,
+      input(1) => fcr_pulse,
       output(0) => reset_sw,
-      output(1) => reset_nconn,
-      output(2) => reset
+      output(1) => reset_fcr
       );
 
   o : SN74XX32
@@ -102,7 +100,7 @@ begin
       DELAY => 8 ns
       )
     port map (
-      a(0) => reset_nconn,
+      a(0) => reset_fcr,
       b(0) => reset_sw,
       output(0) => toggle_reset
       );
@@ -133,13 +131,16 @@ begin
 
   na : SN74XX00
     generic map (
-      WIDTH => 1,
+      WIDTH => 2,
       DELAY => 8 ns
       )
     port map (
       a(0) => reset_pulse,
+      a(1) => nand_out,
       b(0) => enable,
-      output(0) => nand_out
+      b(1) => nand_out,
+      output(0) => nand_out,
+      output(1) => reset
       );
 
   -- REFSH pulse
@@ -154,11 +155,11 @@ begin
   -- NORTH conn reset pulse.
   process
   begin
-    nconn_pulse <= '1';
+    fcr_pulse <= '1';
     wait for 20 us;
-    nconn_pulse <= '0';
+    fcr_pulse <= '0';
     wait for 5 us;
-    nconn_pulse <= '1';
+    fcr_pulse <= '1';
     wait for 50 us;
   end process;
 
