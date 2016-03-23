@@ -13,6 +13,7 @@ entity Z80 is
     clk : in std_logic;
     reset : in std_logic;
     w8 : in std_logic;
+    busreq : in std_logic;
 
     address : out std_logic_vector(15 downto 0);
     data : out std_logic_vector(7 downto 0);
@@ -47,6 +48,18 @@ architecture rtl of Z80 is
     variable result : vcd;
   begin
     result := (address => "0000000000000000", data => "00000000", others => '0');
+    return result;
+  end function;
+
+  function off return vcd is
+    variable result : vcd;
+  begin
+    result := (address => "ZZZZZZZZZZZZZZZZ",
+               data => "ZZZZZZZZ",
+               busack => '0',
+               halt => '1',
+               m1 => '1',
+               others => 'Z');
     return result;
   end function;
 
@@ -170,21 +183,36 @@ architecture rtl of Z80 is
 
 begin
 
-  process(clk, reset, w8)
+  process(clk, reset)
     file f : text;
     variable v : vcd := init;
     variable eof : boolean := true;
     variable sync : boolean := false;
+    variable dma : boolean := false;
   begin
+    -- NOTE WAIT handling disregards instruction integrity.
     if reset = '0' then
-      eof := true; -- Reopen the file on the next clock cycle.
       v := init;
+      eof := true; -- Reopen the file on the next clock cycle.
       sync := true;
-    elsif falling_edge(clk) and w8 = '0' then
-      sync := true;
-    elsif w8 = '1' and (rising_edge(clk) or (falling_edge(clk) and not sync)) then
+      dma := false;
+    elsif falling_edge(clk) and w8 = '1' and not sync then
       looped_read_csv_line(f, CSV_FILE, v, eof);
-      sync := false;
+    elsif rising_edge(clk) and w8 = '1' then
+      -- NOTE BUSREQ handling completely disregards instruction integrity.
+      if busreq = '1' then
+        sync := false;
+        dma := false;
+        looped_read_csv_line(f, CSV_FILE, v, eof);
+      else
+        if dma then
+          v := off;
+          sync := true;
+        else
+          looped_read_csv_line(f, CSV_FILE, v, eof);
+          dma := true;
+        end if;
+      end if;
     end if;
 
     -- Assign all the signals.
