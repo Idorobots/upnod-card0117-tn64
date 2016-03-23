@@ -3,9 +3,13 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 entity clock is
+  port (
+    clk : out std_logic;
+    osc_16mhz : out std_logic
+    );
 end entity;
 
-architecture TB of clock is
+architecture rtl of clock is
 
   component SN74XX04
     generic (
@@ -32,10 +36,12 @@ architecture TB of clock is
       );
   end component;
 
-  signal clk : std_logic;
-  signal q_out : std_logic_vector(3 downto 0);
+  signal osc : std_logic;
+  signal q : std_logic_vector(3 downto 0);
 
 begin
+
+  osc_16mhz <= osc;
 
   d : SN74XX197
     generic map (
@@ -45,27 +51,28 @@ begin
       pl => '1',
       mr => '1',
       p => "ZZZZ",
-      q => q_out,
-      clk0 => clk,
-      clk1 => q_out(0)
+      q => q,
+      clk0 => osc,
+      clk1 => q(0)
       );
 
   i : SN74XX04
     generic map (
-      WIDTH => 4,
+      WIDTH => 1,
       DELAY => 8 ns
       )
     port map (
-      input => q_out
+      input(0) => q(1),
+      output(0) => clk
       );
 
-  -- 16 MHz clock
+  -- 16 MHz oscillator
   process
   begin
-    clk <= '0';
-    wait for 31 ns;
-    clk <= '1';
-    wait for 31 ns;
+    osc <= '0';
+    wait for 31250 ps;
+    osc <= '1';
+    wait for 31250 ps;
   end process;
 
 end;
