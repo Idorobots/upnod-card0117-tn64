@@ -107,27 +107,6 @@ architecture rtl of decoder is
       );
   end component;
 
-  component Z80
-    generic (
-      CSV_FILE : string;
-      DELAY : time
-      );
-    port (
-      clk : in std_logic;
-      address : out std_logic_vector(15 downto 0);
-      data : out std_logic_vector(7 downto 0);
-
-      busack : out std_logic;
-      halt : out std_logic;
-      refsh : out std_logic;
-      m1 : out std_logic;
-      iorq : out std_logic;
-      mreq : out std_logic;
-      wr : out std_logic;
-      rd : out std_logic
-      );
-  end component;
-
   signal or_out : std_logic_vector(3 downto 0);
   signal nand_out : std_logic_vector(1 downto 0);
   signal and_out : std_logic_vector(1 downto 0);

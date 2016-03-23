@@ -85,12 +85,12 @@ architecture rtl of Z80 is
     variable v : std_logic;
     variable invalid : boolean := true;
   begin
-      -- NOTE Read at least one valid signal.
-      while invalid loop
-        read(l, c);
-        v := to_std_logic(c);
-        invalid := v = 'X';
-      end loop;
+    -- NOTE Read at least one valid signal.
+    while invalid loop
+      read(l, c);
+      v := to_std_logic(c);
+      invalid := v = 'X';
+    end loop;
     result := v;
   end procedure;
 
