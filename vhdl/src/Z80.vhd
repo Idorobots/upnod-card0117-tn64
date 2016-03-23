@@ -11,6 +11,8 @@ entity Z80 is
 
   port (
     clk : in std_logic;
+    reset : in std_logic;
+
     address : out std_logic_vector(15 downto 0);
     data : out std_logic_vector(7 downto 0);
 
@@ -167,27 +169,32 @@ architecture rtl of Z80 is
 
 begin
 
-  process(clk)
+  process(clk, reset)
     file f : text;
     variable v : vcd := init;
     variable eof : boolean := true;
+    variable just_reset : boolean := false;
   begin
-    if rising_edge(clk) or falling_edge(clk) then
+    if reset = '0' then
+      eof := true; -- Reopen the file on the next clock cycle.
+      v := init;
+      just_reset := true;
+    elsif rising_edge(clk) or (falling_edge(clk) and not just_reset) then
       looped_read_csv_line(f, CSV_FILE, v, eof);
-
-      -- Assign all the signals.
-      address <= v.address after DELAY;
-      data <= v.data after DELAY;
-      busack <= v.busack after DELAY;
-      halt <= v.halt after DELAY;
-      refsh <= v.refsh after DELAY;
-      m1 <= v.m1 after DELAY;
-      iorq <= v.iorq after DELAY;
-      mreq <= v.mreq after DELAY;
-      wr <= v.wr after DELAY;
-      rd <= v.rd after DELAY;
-
+      just_reset := false;
     end if;
+
+    -- Assign all the signals.
+    address <= v.address after DELAY;
+    data <= v.data after DELAY;
+    busack <= v.busack after DELAY;
+    halt <= v.halt after DELAY;
+    refsh <= v.refsh after DELAY;
+    m1 <= v.m1 after DELAY;
+    iorq <= v.iorq after DELAY;
+    mreq <= v.mreq after DELAY;
+    wr <= v.wr after DELAY;
+    rd <= v.rd after DELAY;
   end process;
 
 end rtl;
