@@ -19,10 +19,36 @@ architecture TB of init is
       );
   end component;
 
+  component Z80
+    generic (
+      CSV_FILE : string;
+      DELAY : time
+      );
+    port (
+      clk : in std_logic;
+      reset : in std_logic;
+      w8 : in std_logic;
+      busreq : in std_logic;
+
+      address : out std_logic_vector(15 downto 0);
+      data : out std_logic_vector(7 downto 0);
+
+      busack : out std_logic;
+      halt : out std_logic;
+      refsh : out std_logic;
+      m1 : out std_logic;
+      iorq : out std_logic;
+      mreq : out std_logic;
+      wr : out std_logic;
+      rd : out std_logic
+      );
+  end component;
+
   signal refsh : std_logic;
   signal sw_pulse : std_logic;
   signal fcr_pulse : std_logic;
   signal reset_pulse : std_logic;
+  signal clk : std_logic;
 begin
 
   res : reset
@@ -37,13 +63,32 @@ begin
       reset => reset_pulse
       );
 
-  -- REFSH pulse
+  cpu : Z80
+    generic map (
+      CSV_FILE => "sim/NOP.csv",
+      --CSV_FILE => "sim/DJNZ.csv",
+      --CSV_FILE => "sim/RDWR.csv",
+      --CSV_FILE => "sim/IO.csv",
+      --CSV_FILE => "sim/BUSACK.csv",
+      --CSV_FILE => "sim/INT.csv",
+      --CSV_FILE => "sim/NMI.csv",
+      DELAY => 20 ns
+      )
+    port map (
+      clk => clk,
+      reset => reset_pulse,
+      w8 => '1',
+      busreq => '1',
+      refsh => refsh
+      );
+
+  -- 4 MHz main CLK.
   process
   begin
-    refsh <= '1' and reset_pulse;
-    wait for 500 ns;
-    refsh <= '0';
-    wait for 500 ns;
+    clk <= '0';
+    wait for 125 ns;
+    clk <= '1';
+    wait for 125 ns;
   end process;
 
   -- FCR conn reset pulse.
