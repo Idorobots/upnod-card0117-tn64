@@ -26,6 +26,27 @@ architecture TB of memmap is
       );
   end component;
 
+  -- NOTE Modded version of the previous component.
+  component decodermod
+    port (
+      clk : in std_logic;
+      address : in std_logic_vector(15 downto 0);
+      data : in std_logic_vector(7 downto 0);
+      reset : in std_logic;
+      refsh : in std_logic;
+      m1 : in std_logic;
+      mreq : in std_logic;
+      iorq : in std_logic;
+      wr : in std_logic;
+      rd : in std_logic;
+      ram_en : out std_logic;
+      bot_rom_en : out std_logic;
+      top_rom_en : out std_logic;
+      reg_en : out std_logic;
+      ctc_en : out std_logic
+      );
+  end component;
+
   component Z80
     generic (
       CSV_FILE : string;
@@ -70,6 +91,7 @@ architecture TB of memmap is
 begin
 
   dec : decoder
+    --dec : decodermod -- NOTE This is a drop-in replacement.
     port map (
       clk => clk,
       address => address,
