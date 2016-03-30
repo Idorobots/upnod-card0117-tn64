@@ -7,6 +7,7 @@ entity decoder is
     clk : in std_logic;
     address : in std_logic_vector(15 downto 0);
     data : in std_logic_vector(7 downto 0);
+    reset : in std_logic; -- NOTE Unused in this version.
     refsh : in std_logic;
     m1 : in std_logic;
     mreq : in std_logic;

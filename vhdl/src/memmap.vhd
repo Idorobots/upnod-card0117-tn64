@@ -11,6 +11,7 @@ architecture TB of memmap is
       clk : in std_logic;
       address : in std_logic_vector(15 downto 0);
       data : in std_logic_vector(7 downto 0);
+      reset : in std_logic;
       refsh : in std_logic;
       m1 : in std_logic;
       mreq : in std_logic;
@@ -64,6 +65,7 @@ architecture TB of memmap is
   signal top_rom_en : std_logic;
   signal reg_en : std_logic;
   signal ctc_en : std_logic;
+  signal reset : std_logic;
 
 begin
 
@@ -72,6 +74,7 @@ begin
       clk => clk,
       address => address,
       data => data,
+      reset => reset,
       refsh => refsh,
       m1 => m1,
       mreq => mreq,
@@ -98,7 +101,7 @@ begin
       )
     port map (
       clk => clk,
-      reset => '1',
+      reset => reset,
       w8 => '1',
       busreq => '1',
       address => address,
@@ -118,6 +121,15 @@ begin
     wait for 125 ns;
     clk <= '1';
     wait for 125 ns;
+  end process;
+
+  -- Reset pulse.
+  process
+  begin
+    reset <= '0';
+    wait for 1 us;
+    reset <= '1';
+    wait for 24 us;
   end process;
 
 end;
