@@ -7,7 +7,7 @@ end entity;
 
 architecture TB of ram is
 
-  component HM4864
+  component rambank
     generic (
       DELAY : time
       );
@@ -28,7 +28,7 @@ architecture TB of ram is
   signal addr : std_logic_vector (7 downto 0);
 begin
 
-  ram : HM4864
+  ram : rambank
     generic map (
       DELAY => 150 ns
       )
