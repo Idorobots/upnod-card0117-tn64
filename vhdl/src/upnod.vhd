@@ -60,6 +60,19 @@ architecture TB of upnod is
       );
   end component;
 
+  component D2764
+    generic (
+      ROM_FILE : string;
+      DELAY : time
+      );
+    port (
+      address : in std_logic_vector (12 downto 0);
+      data : out std_logic_vector(7 downto 0);
+      ce : in std_logic;
+      oe : in std_logic
+      );
+  end component;
+
   component Z80
     generic (
       CSV_FILE : string;
@@ -172,6 +185,30 @@ begin
       wr => wr,
       ram_en => ram_en,
       reg_en => reg_en
+      );
+
+  top_rom : D2764
+    generic map (
+      ROM_FILE => "../rom/top.bin",
+      DELAY => 180 ns
+      )
+    port map (
+      address => address(12 downto 0),
+      data => data,
+      oe => rd,
+      ce => top_rom_en
+      );
+
+  bot_rom : D2764
+    generic map (
+      ROM_FILE => "../rom/bottom.bin",
+      DELAY => 180 ns
+      )
+    port map (
+      address => address(12 downto 0),
+      data => data,
+      oe => rd,
+      ce => bot_rom_en
       );
 
   cpu : Z80
