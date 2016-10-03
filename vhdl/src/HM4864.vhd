@@ -47,22 +47,22 @@ begin
       data_out <= 'Z' after DELAY;
     elsif falling_edge(ras) then
       a(15 downto 8) := address;
-    elsif ras = '0' and falling_edge(cas) then
+    elsif ras = '0' and falling_edge(cas) and we = '0' then
       a(7 downto 0) := address;
-
-      -- FIXME WE can be asserted after CAS goes low, so the following if
-      -- FIXME won't work.
-      if we = '0' then
-        -- Write cycle.
-        b := data_in;
-        data(to_integer(unsigned(a))) <= b after DELAY;
-        report "wrote " & std_logic'image(b) & " at " & to_string(a);
-      else
-        -- Read cycle.
-        b := data(to_integer(unsigned(a)));
-        data_out <= b after DELAY;
-        report "read " & std_logic'image(b) & " at " & to_string(a);
-      end if;
+      -- Write cycle.
+      b := data_in;
+      data(to_integer(unsigned(a))) <= b after DELAY;
+      report "wrote " & std_logic'image(b) & " at " & to_string(a);
+    elsif ras = '0' and cas = '0' and falling_edge(we) then
+      -- Write cycle.
+      b := data_in;
+      data(to_integer(unsigned(a))) <= b after DELAY;
+      report "wrote " & std_logic'image(b) & " at " & to_string(a);
+    elsif ras = '0' and cas = '0' then
+      -- Read cycle.
+      b := data(to_integer(unsigned(a)));
+      data_out <= b after DELAY;
+      report "read " & std_logic'image(b) & " at " & to_string(a);
     elsif rising_edge(ras) then
       a := (others => '0');
     end if;
